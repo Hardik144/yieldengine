@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MANDATORY per modern-web-guidance `dark-mode`: Apply color-scheme to :root for viewport-wide theming */
+:root {
+  --brand-accent-light: #d97706;
+  --brand-accent-dark: #f59e0b;
+  --accent-color: var(--brand-accent-dark);
+
+  --scrollbar-track: #06090f;
+  --scrollbar-thumb: #334155;
+
+  @media (prefers-color-scheme: dark) {
+    --accent-color: var(--brand-accent-dark);
+  }
+
+  @supports (color: light-dark(white, black)) {
+    --accent-color: light-dark(var(--brand-accent-light), var(--brand-accent-dark));
+    --scrollbar-track: light-dark(#0f172a, #06090f);
+    --scrollbar-thumb: light-dark(#475569, #334155);
+  }
+
+  color-scheme: dark;
+  accent-color: var(--accent-color);
+  /* Pair scrollbar-color with scrollbar-width so macOS renders custom scrollbars */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Legacy fallback for WebKit/Blink browsers without scrollbar-color support */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+}
+
+body {
+  background-color: #06090f;
+  color: #f8fafc;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* MANDATORY per modern-web-guidance `dialog`: prevent scroll chaining behind modal without overflow:hidden on body */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background-color: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(2px);
+}
+
+/* Responsive table container query rules per modern-web-guidance `responsive-table` */
+.table-wrapper {
+  container-type: inline-size;
+}
+
+@container (width < 600px) {
+  .table-wrapper thead {
+    display: none;
+  }
+
+  .table-wrapper tbody tr {
+    display: block;
+    margin-block-end: 0.75rem;
+    height: auto !important;
+    border: 1px solid #1e293b;
+    padding: 0.5rem;
+  }
+
+  .table-wrapper tbody th,
+  .table-wrapper tbody td {
+    display: flex;
+    justify-content: space-between;
+    text-align: right;
+  }
+
+  .table-wrapper tbody td::before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: #94a3b8;
+  }
+}
+
+/* Forced colors mode fallback per modern-web-guidance `color` */
+@media (forced-colors: active) {
+  .table-wrapper,
+  dialog {
+    border: 2px solid CanvasText;
+  }
+}
