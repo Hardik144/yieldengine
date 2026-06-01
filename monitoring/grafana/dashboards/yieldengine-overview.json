@@ -1,0 +1,89 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "title": "PostgreSQL Query Latency (ms) [SLA < 50ms]",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "yieldengine_last_db_query_latency_ms",
+          "legendFormat": "Last DB Query Latency (ms)",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(yieldengine_db_query_latency_seconds_bucket[1m])) by (le)) * 1000",
+          "legendFormat": "P95 DB Latency (ms)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Inbound Quote Ingestion Rate (Target: 83-84 req/min | 5,000+ req/hr)",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "yieldengine_ingestion_rate_quotes_per_minute",
+          "legendFormat": "Quotes / Min",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Auto-Approval Yield Ratio (Target: 85.0% > 15% Margin)",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "yieldengine_auto_approval_ratio",
+          "legendFormat": "Auto-Approved %",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Simulated Global VLSFO Fuel Price ($/MT) & Port Congestion Index",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "yieldengine_latest_fuel_price_usd",
+          "legendFormat": "Fuel Price ($/MT)",
+          "refId": "A"
+        },
+        {
+          "expr": "yieldengine_latest_port_congestion_index",
+          "legendFormat": "Port Congestion Index (0-100)",
+          "refId": "B"
+        },
+        {
+          "expr": "yieldengine_latest_container_availability_index",
+          "legendFormat": "Container Availability (%)",
+          "refId": "C"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": ["yieldengine", "logistics", "postgresql", "fastapi"],
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "YieldEngine Enterprise B2B Logistics Telemetry & Latency SLA",
+  "uid": "yieldengine-enterprise-sla",
+  "version": 1
+}
